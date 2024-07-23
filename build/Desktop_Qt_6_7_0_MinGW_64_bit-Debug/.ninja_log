@@ -1,0 +1,24 @@
+# ninja log v5
+13	2070	7434500494975925	mediaSorterByNir_autogen/timestamp	9c34e7cbefb25f7
+13	2070	7434500494975925	mediaSorterByNir_autogen/mocs_compilation.cpp	9c34e7cbefb25f7
+2075	7607	7434500554375975	CMakeFiles/mediaSorterByNir.dir/pathsscreen.cpp.obj	fa7a31fc78983983
+13	2070	7434500494975925	C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/mediaSorterByNir_autogen/timestamp	9c34e7cbefb25f7
+2079	7453	7434500552742697	CMakeFiles/mediaSorterByNir.dir/startupscreen.cpp.obj	94b35548f64e312
+2300	5614	7434499027658681	CMakeFiles/mediaSorterByNir.dir/clickablelabel.cpp.obj	8b7d21f1e213a4f1
+13	2070	7434500494975925	C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/mediaSorterByNir_autogen/mocs_compilation.cpp	9c34e7cbefb25f7
+2092	8089	7434500559212009	CMakeFiles/mediaSorterByNir.dir/mainsortingwindow.cpp.obj	99ac54d02f22b410
+2289	10278	7434499074447098	CMakeFiles/mediaSorterByNir.dir/main.cpp.obj	a5a0d6d0fd53bb85
+2071	13237	7434500610604430	CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/mocs_compilation.cpp.obj	13054821bbf11686
+2083	14656	7434500624868301	CMakeFiles/mediaSorterByNir.dir/widget.cpp.obj	abb0f56eee4275f6
+2088	7275	7434500550881509	CMakeFiles/mediaSorterByNir.dir/custommessagebox.cpp.obj	863f5645a607ff3f
+17	757	7434501381137220	mediaSorterByNir_autogen/timestamp	9c34e7cbefb25f7
+17	757	7434501381137220	mediaSorterByNir_autogen/mocs_compilation.cpp	9c34e7cbefb25f7
+17	757	7434501381137220	C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/mediaSorterByNir_autogen/timestamp	9c34e7cbefb25f7
+17	757	7434501381137220	C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/mediaSorterByNir_autogen/mocs_compilation.cpp	9c34e7cbefb25f7
+776	4887	7434501422621228	CMakeFiles/mediaSorterByNir.dir/hoveredobject.cpp.obj	ba906fe03c94b79a
+761	5054	7434501424930796	CMakeFiles/mediaSorterByNir.dir/startupscreen.cpp.obj	94b35548f64e312
+764	5319	7434501427751682	CMakeFiles/mediaSorterByNir.dir/pathsscreen.cpp.obj	fa7a31fc78983983
+772	5813	7434501432614852	CMakeFiles/mediaSorterByNir.dir/mainsortingwindow.cpp.obj	99ac54d02f22b410
+758	9962	7434501474181860	CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/mocs_compilation.cpp.obj	13054821bbf11686
+768	11326	7434501487754273	CMakeFiles/mediaSorterByNir.dir/widget.cpp.obj	abb0f56eee4275f6
+11326	11936	7434501493877450	mediaSorterByNir.exe	d6e6784db4d9430c
