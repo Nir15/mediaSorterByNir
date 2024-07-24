@@ -857,6 +857,7 @@ mediaSorterByNir_autogen/timestamp: \
   C:/Qt/QtProjects/mediaSorterByNir/pathsscreen.cpp \
   C:/Qt/QtProjects/mediaSorterByNir/pathsscreen.h \
   C:/Qt/QtProjects/mediaSorterByNir/pathsscreen.ui \
+  C:/Qt/QtProjects/mediaSorterByNir/resource.qrc \
   C:/Qt/QtProjects/mediaSorterByNir/startupscreen.cpp \
   C:/Qt/QtProjects/mediaSorterByNir/startupscreen.h \
   C:/Qt/QtProjects/mediaSorterByNir/startupscreen.ui \

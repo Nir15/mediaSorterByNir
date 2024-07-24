@@ -57,10 +57,14 @@ constexpr auto qt_meta_stringdata_CLASSWidgetENDCLASS = QtMocHelpers::stringData
     "volumePushButtonClicked",
     "volumeHorizontalSliderValueChanged",
     "value",
+    "durationHorizontalSliderValueChanged",
     "stopPushButtonClicked",
     "forwardPushButtonClicked",
     "backwardsPushButtonClicked",
-    "playPausePushButtonClicked"
+    "playPausePushButtonClicked",
+    "loadNewVideo",
+    "videoName",
+    "clearMediaObjects"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -73,7 +77,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSWidgetENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      19,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -81,22 +85,25 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSWidgetENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,  110,    2, 0x08,    1 /* Private */,
-       3,    0,  111,    2, 0x08,    2 /* Private */,
-       4,    0,  112,    2, 0x08,    3 /* Private */,
-       5,    0,  113,    2, 0x08,    4 /* Private */,
-       6,    0,  114,    2, 0x08,    5 /* Private */,
-       7,    0,  115,    2, 0x08,    6 /* Private */,
-       8,    1,  116,    2, 0x08,    7 /* Private */,
-      10,    1,  119,    2, 0x08,    9 /* Private */,
-      12,    1,  122,    2, 0x08,   11 /* Private */,
-      14,    1,  125,    2, 0x08,   13 /* Private */,
-      15,    0,  128,    2, 0x08,   15 /* Private */,
-      16,    1,  129,    2, 0x08,   16 /* Private */,
-      18,    0,  132,    2, 0x08,   18 /* Private */,
-      19,    0,  133,    2, 0x08,   19 /* Private */,
-      20,    0,  134,    2, 0x08,   20 /* Private */,
-      21,    0,  135,    2, 0x08,   21 /* Private */,
+       1,    0,  128,    2, 0x08,    1 /* Private */,
+       3,    0,  129,    2, 0x08,    2 /* Private */,
+       4,    0,  130,    2, 0x08,    3 /* Private */,
+       5,    0,  131,    2, 0x08,    4 /* Private */,
+       6,    0,  132,    2, 0x08,    5 /* Private */,
+       7,    0,  133,    2, 0x08,    6 /* Private */,
+       8,    1,  134,    2, 0x08,    7 /* Private */,
+      10,    1,  137,    2, 0x08,    9 /* Private */,
+      12,    1,  140,    2, 0x08,   11 /* Private */,
+      14,    1,  143,    2, 0x08,   13 /* Private */,
+      15,    0,  146,    2, 0x08,   15 /* Private */,
+      16,    1,  147,    2, 0x08,   16 /* Private */,
+      18,    1,  150,    2, 0x08,   18 /* Private */,
+      19,    0,  153,    2, 0x08,   20 /* Private */,
+      20,    0,  154,    2, 0x08,   21 /* Private */,
+      21,    0,  155,    2, 0x08,   22 /* Private */,
+      22,    0,  156,    2, 0x08,   23 /* Private */,
+      23,    1,  157,    2, 0x08,   24 /* Private */,
+      25,    0,  160,    2, 0x08,   26 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -111,10 +118,13 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSWidgetENDCLASS[] = {
     QMetaType::Void, QMetaType::LongLong,   13,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   17,
+    QMetaType::Void, QMetaType::Int,   17,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   24,
+    QMetaType::Bool,
 
        0        // eod
 };
@@ -157,6 +167,9 @@ Q_CONSTINIT const QMetaObject Widget::staticMetaObject = { {
         // method 'volumeHorizontalSliderValueChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'durationHorizontalSliderValueChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'stopPushButtonClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'forwardPushButtonClicked'
@@ -164,7 +177,12 @@ Q_CONSTINIT const QMetaObject Widget::staticMetaObject = { {
         // method 'backwardsPushButtonClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'playPausePushButtonClicked'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'loadNewVideo'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        // method 'clearMediaObjects'
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>
     >,
     nullptr
 } };
@@ -187,10 +205,14 @@ void Widget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 9: _t->positionChanged((*reinterpret_cast< std::add_pointer_t<qint64>>(_a[1]))); break;
         case 10: _t->volumePushButtonClicked(); break;
         case 11: _t->volumeHorizontalSliderValueChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 12: _t->stopPushButtonClicked(); break;
-        case 13: _t->forwardPushButtonClicked(); break;
-        case 14: _t->backwardsPushButtonClicked(); break;
-        case 15: _t->playPausePushButtonClicked(); break;
+        case 12: _t->durationHorizontalSliderValueChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 13: _t->stopPushButtonClicked(); break;
+        case 14: _t->forwardPushButtonClicked(); break;
+        case 15: _t->backwardsPushButtonClicked(); break;
+        case 16: _t->playPausePushButtonClicked(); break;
+        case 17: _t->loadNewVideo((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 18: { bool _r = _t->clearMediaObjects();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     }
@@ -215,13 +237,13 @@ int Widget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 19;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
+        if (_id < 19)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 16;
+        _id -= 19;
     }
     return _id;
 }

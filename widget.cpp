@@ -102,7 +102,7 @@ Widget::Widget(QWidget *parent)
 
     connect(m_mainSortingWindowPtr->getUndoPushButton(), &QPushButton::clicked, [=](){undoLastAction();});
 
-    // initialize atext for tooltips
+    // initialize a text for tooltips
     hoveredObject* foldersAvailbleHover = new hoveredObject(this);
     foldersAvailbleHover->setHoveredText("List of all subfolders available in chosen destination folder.\n"
                                          "By clicking on folder from the list, current image/video will be\n"
@@ -494,8 +494,10 @@ void Widget::switchImage(imageSwitchEnum is){
 
     // the call for this function may occur via the next and previous buttons, but also from filter textedit.
     // therefor it is important to find out what is the reason of calling and adjust the image list apropriately
-    QStringList localImageList = m_imagesListFiltered.empty() ? m_imagesList : m_imagesListFiltered;
-    m_isFilteredImageList = m_imagesListFiltered.empty() ? false : true;
+    // QStringList localImageList = m_imagesListFiltered.empty() ? m_imagesList : m_imagesListFiltered;
+    // m_isFilteredImageList = m_imagesListFiltered.empty() ? false : true;
+    QStringList localImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? m_imagesList : m_imagesListFiltered;
+    m_isFilteredImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? false : true; // check if there is text in filter
 
     m_mainSortingWindowPtr->getfilterNumImagesLeftLabel()->setText(QString::number(localImageList.size()) + " images left after filter.");
 
@@ -551,9 +553,21 @@ void Widget::switchImage(imageSwitchEnum is){
         m_mainSortingWindowPtr->getDeleteButton()->setEnabled(false);
         m_mainSortingWindowPtr->getRotateClockwiseButton()->setEnabled(false);
         m_mainSortingWindowPtr->getfilterNumImagesLeftLabel()->setText("No images match this filter.");
+        hideAllVideoInterface();
+        clearMediaObjects();
         return;
     }
 
+
+    // situation where there is a filter applied, but no files left to match the filter.
+    // the ONLY way to call switchImage function without imageSwitchEnum::InValid argument while there is a filter
+    // not matching anything, is when we delete all files match the filter, yet there are more files
+    // left in the folder. in this case we have to delete the filter and try a new one, or simply continue without filter.
+    if (m_isFilteredImageList && m_imagesListFiltered.isEmpty()){
+        // updateFilteredImageList(m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText()); // this will cause a switchImage with imageSwitchEnum::InValid argument call
+        switchImage(imageSwitchEnum::InValid); // meaning the filter is incompatible to any of the images
+        return;
+    }
 
     QFile jpgFile = m_srcDirPath + QString("/") + localImageList[m_imageCounter];
 
@@ -579,29 +593,15 @@ void Widget::switchImage(imageSwitchEnum is){
     m_mainSortingWindowPtr->getDateModifiedLabel()->setText(QString("Last modified in: ") + QString("<span style='font-weight:bold;'>%1</span>").arg(lastModified.toString()));
 
 
-    if (m_videoWidget){
-        m_videoWidget->setVisible(false);
-        m_videoWidget->hide();
-        m_mediaPlayer->stop();
-        delete m_videoWidget; // delete last object for preventing memory leak
-        m_videoWidget = nullptr;
+    if (clearMediaObjects()){
+        hideAllVideoInterface();
     }
 
     m_mainSortingWindowPtr->getImageLabel()->clear();
 
     if (fileInfo.suffix() == "mp4"){ // video file
-        // m_videoWidget = new QVideoWidget(m_mainSortingWindowPtr->getImageLabel());
-        // m_videoWidget->setGeometry(5, 5, m_mainSortingWindowPtr->getImageLabel()->width() - 10, m_mainSortingWindowPtr->getImageLabel()->height() - 10);
-        // m_videoWidget->setParent(m_mainSortingWindowPtr->getImageLabel());
-        m_videoWidget = new QVideoWidget();
-        m_videoWidget->setGeometry(5, 5, this->width() - 10, this->height() - 10);
-        this->show();
-        m_mainSortingWindowPtr->hide();
-        m_mediaPlayer->setVideoOutput(m_videoWidget);
-        m_mediaPlayer->setSource(QUrl(m_srcDirPath + QString("/") + localImageList[m_imageCounter]));
-        m_videoWidget->setVisible(true);
-        m_videoWidget->show();
-        m_mediaPlayer->play();
+        loadNewVideo(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
+        showAllVideoInterface();
     }
 
     else { // image file
@@ -642,9 +642,17 @@ void Widget::deleteImage()
 
     QFile file(m_srcDirPath + "/" + imageName);
 
-    // the Qt framework does not support deleting and restoring images using recycle bin. therefor, the solution made to allow user
+    // the Qt framework does not support deleting and restoring images using recycle bin. therefore, the solution made to allow user
     // to undo deletion of images is to store the "deleted" images at a temporary folder, which is tranparent to user. this way
     // it will be possible to restor the image, and when exiting the app only then the images will be truely deleted.
+
+
+    // if the current file is .mp4, we need to first stop it and clear its containing objects.
+    // otherwise OS spots the file is being used, and we can't make any actions on him.
+    if (clearMediaObjects()){
+        hideAllVideoInterface();
+    }
+
     if (file.rename(m_srcDirPath + "/sortingAppDeletedImages/" + imageName)){
         QPixmap icon(":/icons/V_NoBackground.png");
         m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
@@ -834,6 +842,11 @@ void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
 
     else { //meaning "Move Image" is now checked
         QFile file(m_srcDirPath + "/" + imageName);
+        // m_mediaPlayer->stop();
+        // m_mediaPlayer->setSource(QUrl());
+        if (clearMediaObjects()){
+            hideAllVideoInterface();
+        }
         if (file.rename(m_dstDirPath + "/" + clickedFolder + "/" + imageName)){
             QPixmap icon(":/icons/V_NoBackground.png");
             m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
@@ -982,6 +995,13 @@ void Widget::CurrentlyInLabelClicked()
 
     else { //clickedFolder is the same as the source folder. in this case the image should be removed from the source
            // folder and then it could not be presented again since it is no longer part of the dest folder.
+
+        // if the current file is .mp4, we need to first stop it and clear its containing objects.
+        // otherwise OS spots the file is being used, and we can't make any actions on him.
+        if (clearMediaObjects()){
+            hideAllVideoInterface();
+        }
+
         QFile file(m_dstDirPath + "/" + clickedFolder + "/" + imageName);
 
         // same as deleteImage process, first pseudo delete the file by copying it to the deletedImages folder.
@@ -1172,7 +1192,7 @@ void Widget::undoLastAction()
                 m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
                 m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + m_undoStruct.imageName + " restored successfully");
 
-                m_imageCounter++; // current index is the index of previous image
+                // m_imageCounter++; // current index is the index of previous image
                 m_imagesList.append(m_undoStruct.imageName);
                 m_imagesListFiltered.append(m_undoStruct.imageName);
 
@@ -1190,7 +1210,7 @@ void Widget::undoLastAction()
                                                                   + m_undoStruct.dstFolder + "\nto\n"
                                                                   + m_undoStruct.srcFolder);
 
-                m_imageCounter++; // current index is the index of previous image
+                // m_imageCounter++; // current index is the index of previous image
                 m_imagesList.append(m_undoStruct.imageName);
                 m_imagesListFiltered.append(m_undoStruct.imageName);
 
@@ -1218,10 +1238,6 @@ void Widget::undoLastAction()
 // sets all objects related to the video player control
 void Widget::setAllVideoInterface()
 {
-    QVideoWidget* m_video = new QVideoWidget(this);
-    m_mediaPlayer = new QMediaPlayer(this);
-    m_audioOutput = new QAudioOutput(this);
-    m_mediaPlayer->setAudioOutput(m_audioOutput);
 
     m_mainSortingWindowPtr->getVolumePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
     m_mainSortingWindowPtr->getBackwardsPushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaSeekBackward));
@@ -1229,12 +1245,17 @@ void Widget::setAllVideoInterface()
     m_mainSortingWindowPtr->getPlayPausePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
     m_mainSortingWindowPtr->getStopPushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
 
+    hoveredObject* BackwardsPushButtonHover = new hoveredObject(this);
+    BackwardsPushButtonHover->setHoveredText("-10s");
+    m_mainSortingWindowPtr->getBackwardsPushButton()->installEventFilter(BackwardsPushButtonHover);
+
+    hoveredObject* ForwardPushButtonHover = new hoveredObject(this);
+    ForwardPushButtonHover->setHoveredText("+10s");
+    m_mainSortingWindowPtr->getForwardPushButton()->installEventFilter(ForwardPushButtonHover);
+
     m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setMinimum(0);
     m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setMaximum(100);
     m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setValue(10);
-
-    connect(m_mediaPlayer, &QMediaPlayer::durationChanged, this, &Widget::durationChanged);
-    connect(m_mediaPlayer, &QMediaPlayer::positionChanged, this, &Widget::positionChanged);
 
     connect(m_mainSortingWindowPtr->getBackwardsPushButton(), &QPushButton::clicked, this, &Widget::backwardsPushButtonClicked);
     connect(m_mainSortingWindowPtr->getForwardPushButton(), &QPushButton::clicked, this, &Widget::forwardPushButtonClicked);
@@ -1242,11 +1263,12 @@ void Widget::setAllVideoInterface()
     connect(m_mainSortingWindowPtr->getStopPushButton(), &QPushButton::clicked, this, &Widget::stopPushButtonClicked);
     connect(m_mainSortingWindowPtr->getVolumePushButton(), &QPushButton::clicked, this, &Widget::volumePushButtonClicked);
     connect(m_mainSortingWindowPtr->getVolumeHorizontalSlider(), &QSlider::sliderMoved, this, &Widget::volumeHorizontalSliderValueChanged);
+    connect(m_mainSortingWindowPtr->getDurationHorizontalSlider(), &QSlider::sliderMoved, this, &Widget::durationHorizontalSliderValueChanged);
 
 
-    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setRange(0, m_mediaPlayer->duration() / 1000);
+    // m_mainSortingWindowPtr->getDurationHorizontalSlider()->setRange(0, m_mediaPlayer->duration() / 1000);
 
-    // hideAllVideoInterface();
+    hideAllVideoInterface();
 }
 
 
@@ -1269,7 +1291,7 @@ void Widget::positionChanged(qint64 duration)
 }
 
 // ---------------------updateDuration(qint64 duration)-------------------------------------------
-// this slot is being executed whenever the video changes it's position i.e at all times it plays
+// this slot is being executed whenever the video changes it's position i.e at all times it plays or when user uses slider
 void Widget::updateDuration(qint64 duration)
 {
     if (duration > 0 || m_videoDuration > 0) {
@@ -1345,27 +1367,34 @@ void Widget::volumePushButtonClicked()
 void Widget::volumeHorizontalSliderValueChanged(int value)
 {
     float realVolume = (float)value/((m_mainSortingWindowPtr->getVolumeHorizontalSlider()->maximum())*1.0);
-    // qDebug() << realVolume;
     m_audioOutput->setVolume(realVolume);
+}
+
+void Widget::durationHorizontalSliderValueChanged(int value)
+{
+    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(value); // advance duration bar by 10 seconds
+    m_mediaPlayer->setPosition(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() * 1000); // position is in ms, multiply by 1000 to advance video in seconds
 }
 
 
 void Widget::stopPushButtonClicked()
 {
     m_mediaPlayer->stop();
+    m_isPaused = true;
+    m_mainSortingWindowPtr->getPlayPausePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
 }
 
 
 void Widget::forwardPushButtonClicked()
 {
-    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() + 2); // advance duration bar by 10 seconds
+    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() + 10); // advance duration bar by 10 seconds
     m_mediaPlayer->setPosition(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() * 1000); // position is in ms, multiply by 1000 to advance video in seconds
 }
 
 
 void Widget::backwardsPushButtonClicked()
 {
-    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() - 2); // decrease duration bar by 10 seconds
+    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() - 10); // decrease duration bar by 10 seconds
     m_mediaPlayer->setPosition(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() * 1000); // position is in ms, multiply by 1000 to advance video in seconds
 }
 
@@ -1386,7 +1415,50 @@ void Widget::playPausePushButtonClicked()
     }
 }
 
-// void Widget::choosePushButtonClicked()
-// {
 
-// }
+void Widget::loadNewVideo(const QString& videoName){
+    m_mediaPlayer = new QMediaPlayer(this);
+    m_audioOutput = new QAudioOutput(this);
+    m_mediaPlayer->setAudioOutput(m_audioOutput);
+
+    m_videoWidget = new QVideoWidget(m_mainSortingWindowPtr->getImageLabel());
+    m_videoWidget->setGeometry(5, 5, m_mainSortingWindowPtr->getImageLabel()->width() - 10, m_mainSortingWindowPtr->getImageLabel()->height() - 10);
+    m_videoWidget->setParent(m_mainSortingWindowPtr->getImageLabel());
+
+    m_mediaPlayer->setVideoOutput(m_videoWidget);
+    m_mediaPlayer->setSource(QUrl(videoName));
+    m_videoWidget->setVisible(true);
+    m_videoWidget->show();
+    m_audioOutput->setMuted(false);
+
+    m_isPaused = false;
+    m_mediaPlayer->play();
+    m_mainSortingWindowPtr->getPlayPausePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+
+    m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setValue(0);
+    m_audioOutput->setVolume(0.0); // start video play muted
+
+    connect(m_mediaPlayer, &QMediaPlayer::durationChanged, this, &Widget::durationChanged);
+    connect(m_mediaPlayer, &QMediaPlayer::positionChanged, this, &Widget::positionChanged);
+}
+
+
+bool Widget::clearMediaObjects(){
+    if (m_mediaPlayer){
+        delete m_mediaPlayer; // delete last object for preventing memory leak
+        m_mediaPlayer = nullptr;
+
+        if (m_videoWidget){
+            delete m_videoWidget; // delete last object for preventing memory leak
+            m_videoWidget = nullptr;
+
+            if (m_audioOutput){
+                delete m_audioOutput; // delete last object for preventing memory leak
+                m_audioOutput = nullptr;
+                return true;
+            }
+        }
+    }
+
+    return false; // if no media objects currently alive
+}

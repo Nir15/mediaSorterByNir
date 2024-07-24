@@ -369,7 +369,7 @@
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="placeholderText">
-                  <string>Text filter of images names. For example: &quot;university&quot;</string>
+                  <string>Text filter of images names. For example: &quot;university&quot; or &quot;jpg&quot;</string>
                  </property>
                 </widget>
                </item>

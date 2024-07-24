@@ -32,6 +32,7 @@ set(PROJECT_SOURCES
     custommessagebox.h
     hoveredobject.cpp
     hoveredobject.h
+    resource.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

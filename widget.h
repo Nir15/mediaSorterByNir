@@ -123,10 +123,13 @@ private slots:
 
     void volumePushButtonClicked();
     void volumeHorizontalSliderValueChanged(int value);
+    void durationHorizontalSliderValueChanged(int value);
     void stopPushButtonClicked();
     void forwardPushButtonClicked();
     void backwardsPushButtonClicked();
     void playPausePushButtonClicked();
+    void loadNewVideo(const QString& videoName);
+    bool clearMediaObjects();
 
 private: //methods
     void findAvailableFolders();

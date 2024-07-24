@@ -474,7 +474,7 @@ public:
         backPushButton->setText(QCoreApplication::translate("MainSortingWindow", "Back", nullptr));
         currentlyInLabel->setText(QCoreApplication::translate("MainSortingWindow", "Currently In", nullptr));
         FoldersAvailableLabel->setText(QCoreApplication::translate("MainSortingWindow", "Folders Available", nullptr));
-        FilterTextEdit->setPlaceholderText(QCoreApplication::translate("MainSortingWindow", "Text filter of images names. For example: \"university\"", nullptr));
+        FilterTextEdit->setPlaceholderText(QCoreApplication::translate("MainSortingWindow", "Text filter of images names. For example: \"university\" or \"jpg\"", nullptr));
         filterNumImagesLeftLabel->setText(QString());
         copyCheckBox->setText(QCoreApplication::translate("MainSortingWindow", "Copy Image", nullptr));
         moveCheckBox->setText(QCoreApplication::translate("MainSortingWindow", "Move Image", nullptr));
