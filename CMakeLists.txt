@@ -35,6 +35,10 @@ set(PROJECT_SOURCES
     resource.qrc
 )
 
+include_directories(C:/Qt/QtProjects/mediaSorterByNir/libRaw/libraw)
+set(LIBRAW_LIB_PATH "C:/Qt/QtProjects/mediaSorterByNir/libRaw/lib")
+set(LIBRAW_LIB "${LIBRAW_LIB_PATH}/libraw.a")
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mediaSorterByNir
         MANUAL_FINALIZATION
@@ -58,7 +62,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(mediaSorterByNir PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets)
+target_link_libraries(mediaSorterByNir PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets ${LIBRAW_LIB})
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

@@ -145,6 +145,7 @@ private: //methods
     void hideAllVideoInterface();
     void showAllVideoInterface();
     void updateDuration(qint64 duration); // typedef long long qint64;
+    QImage libRawToQImage(const QString imagePath);
 
 
 private: // fields

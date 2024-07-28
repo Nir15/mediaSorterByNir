@@ -13,6 +13,7 @@
 #include <QVBoxLayout>
 #include <QDirIterator>
 #include <QRegularExpression>
+#include <libraw.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -243,7 +244,13 @@ void Widget::pathsBrowseSrcButtonClicked()
                                                         << "*.jpeg"
                                                         << "*.JPEG"
                                                         << "*.mp4"
-                                                        << "*.MP4",
+                                                        << "*.MP4"
+                                                        << "*.tif"
+                                                        << "*.TIF"
+                                                        << "*.tiff"
+                                                        << "*.TIFF"
+                                                        << "*.nef"
+                                                        << "*.NEF",
                                                         QDir::Files);
         m_imagesListFiltered.clear();
 
@@ -256,7 +263,10 @@ void Widget::pathsBrowseSrcButtonClicked()
         for(int i=0;i<fileList.size();i++){
             if (fileList[i].endsWith(".jpg", Qt::CaseInsensitive)  ||
                 fileList[i].endsWith(".jpeg", Qt::CaseInsensitive) ||
-                fileList[i].endsWith(".mp4", Qt::CaseInsensitive))
+                fileList[i].endsWith(".mp4", Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".tif", Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".tiff", Qt::CaseInsensitive) ||
+                fileList[i].endsWith(".nef", Qt::CaseInsensitive))
                 jpgCount++;
         }
 
@@ -322,22 +332,6 @@ void Widget::pathsBrowseDstButtonClicked()
                 pathsBrowseDstButtonClicked(); // user needs to choose again
             }
         }
-
-        // // check for the number of images in directory
-        // int folderCount = 0;
-        // for(int i=0;i<fileList.size();i++){
-        //     if (fileList[i].endsWith(".jpg", Qt::CaseInsensitive) || fileList[i].endsWith(".jpeg", Qt::CaseInsensitive))
-        //         folderCount++;
-        // }
-
-        // if (folderCount > 0){ // case the directory chosen is not empty of images
-        //     QString tempFolderCount = QString("<span style='color:red; font-weight:bold;'>%1</span>").arg(QString::number(folderCount));
-        //     QString dstFolderCount = "The directory contains " + tempFolderCount + " subfolders.";
-        //     m_pathsScreenPtr->getDstImgCntTextEdit()->setText(dstFolderCount);
-        // }
-        // else {
-        //     m_pathsScreenPtr->getDstImgCntTextEdit()->setText(QString("The directory contains no subfolders."));
-        // }
     }
 
     // next screen of app will be available only if both src and dst directories have been selected
@@ -604,7 +598,51 @@ void Widget::switchImage(imageSwitchEnum is){
         showAllVideoInterface();
     }
 
-    else { // image file
+    else if (fileInfo.suffix() == "nef" || fileInfo.suffix() == "NEF"){
+        // Convert LibRaw image to QImage
+        QImage image = libRawToQImage(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
+        // QImage image = libRawToQImage("C:/_NZ22383.nef");
+
+        m_imagePixmap = m_imagePixmap.fromImage(image);
+        // m_imagePixmap = QPixmap(image.width(), image.height());
+        m_imagePixmap = m_imagePixmap.transformed(m_transformImage); // make the rotation if needed
+
+        qDebug() << QString(":/") + localImageList[m_imageCounter];
+        qDebug() << "m_imageCounter = " << m_imageCounter;
+
+        float width = (float)m_imagePixmap.width();
+        float height =  (float)m_imagePixmap.height();
+        float scaleFactor = width > height ? (MAX_WIDTH_HEIGHT/width) : (MAX_WIDTH_HEIGHT/height);
+
+        QRect rect = m_mainSortingWindowPtr->getImageLabel()->geometry();
+        rect.setHeight(height*scaleFactor);
+        rect.setWidth(width*scaleFactor);
+        m_mainSortingWindowPtr->getImageLabel()->setGeometry(rect);
+
+        qDebug() << "width = " << m_imagePixmap.width();
+        qDebug() << "height = " << m_imagePixmap.height();
+        m_mainSortingWindowPtr->getImageLabel()->setPixmap(m_imagePixmap.scaled(width*scaleFactor,height*scaleFactor,Qt::KeepAspectRatio,Qt::SmoothTransformation)); // image presented in label
+        // // Create a QLabel to display the image
+        // QLabel label;
+        // label.setWindowTitle("NEF Image Viewer");
+
+        // Get the available screen size (or set a specific size)
+        // QSize screenSize = label.size();
+        // if (screenSize.isEmpty()) {
+        //     screenSize = QSize(800, 600); // Default size if QLabel has no size
+        // }
+
+        // Scale the image to fit within the screen size while maintaining aspect ratio
+        // QPixmap pixmap = QPixmap::fromImage(image);
+        // QPixmap scaledPixmap = pixmap.scaled(screenSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+        // // Set the scaled pixmap to the QLabel
+        // label.setPixmap(scaledPixmap);
+        // label.resize(scaledPixmap.size());
+        // label.show();
+    }
+
+    else { // image file (.jpg or .tif)
         m_imagePixmap = QPixmap(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
         m_imagePixmap = m_imagePixmap.transformed(m_transformImage); // make the rotation if needed
 
@@ -1318,6 +1356,7 @@ void Widget::updateDuration(qint64 duration)
 }
 
 // ---------------------hideAllVideoInterface()-------------------------------------------
+// hides all video UI from the bottom of image label
 void Widget::hideAllVideoInterface()
 {
     m_mainSortingWindowPtr->getVolumePushButton()->hide();
@@ -1332,6 +1371,7 @@ void Widget::hideAllVideoInterface()
 }
 
 // ---------------------showAllVideoInterface()-------------------------------------------
+// shows all video UI in bottom of image label
 void Widget::showAllVideoInterface()
 {
     m_mainSortingWindowPtr->getVolumePushButton()->show();
@@ -1346,7 +1386,7 @@ void Widget::showAllVideoInterface()
 }
 
 
-// ---------------------showAllVideoInterface()-------------------------------------------
+// ---------------------volumePushButtonClicked()-------------------------------------------
 void Widget::volumePushButtonClicked()
 {
     if (m_isMuted == false)
@@ -1364,12 +1404,16 @@ void Widget::volumePushButtonClicked()
 }
 
 
+// ---------------------volumeHorizontalSliderValueChanged(int value)-------------------------------------------
 void Widget::volumeHorizontalSliderValueChanged(int value)
 {
     float realVolume = (float)value/((m_mainSortingWindowPtr->getVolumeHorizontalSlider()->maximum())*1.0);
     m_audioOutput->setVolume(realVolume);
 }
 
+
+
+// ---------------------durationHorizontalSliderValueChanged(int value)-------------------------------------------
 void Widget::durationHorizontalSliderValueChanged(int value)
 {
     m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(value); // advance duration bar by 10 seconds
@@ -1377,6 +1421,7 @@ void Widget::durationHorizontalSliderValueChanged(int value)
 }
 
 
+// ---------------------stopPushButtonClicked()-------------------------------------------
 void Widget::stopPushButtonClicked()
 {
     m_mediaPlayer->stop();
@@ -1385,6 +1430,8 @@ void Widget::stopPushButtonClicked()
 }
 
 
+
+// ---------------------forwardPushButtonClicked()-------------------------------------------
 void Widget::forwardPushButtonClicked()
 {
     m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() + 10); // advance duration bar by 10 seconds
@@ -1392,6 +1439,8 @@ void Widget::forwardPushButtonClicked()
 }
 
 
+
+// ---------------------backwardsPushButtonClicked()-------------------------------------------
 void Widget::backwardsPushButtonClicked()
 {
     m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() - 10); // decrease duration bar by 10 seconds
@@ -1399,6 +1448,7 @@ void Widget::backwardsPushButtonClicked()
 }
 
 
+// ---------------------playPausePushButtonClicked()-------------------------------------------
 void Widget::playPausePushButtonClicked()
 {
     if (m_isPaused == true)
@@ -1416,6 +1466,8 @@ void Widget::playPausePushButtonClicked()
 }
 
 
+// ---------------------loadNewVideo()-------------------------------------------
+// load new video to the relevant multimedia objects and display it on label
 void Widget::loadNewVideo(const QString& videoName){
     m_mediaPlayer = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -1443,6 +1495,8 @@ void Widget::loadNewVideo(const QString& videoName){
 }
 
 
+// ---------------------clearMediaObjects()-------------------------------------------
+// deletes all media object creaated to display video on image label
 bool Widget::clearMediaObjects(){
     if (m_mediaPlayer){
         delete m_mediaPlayer; // delete last object for preventing memory leak
@@ -1461,4 +1515,45 @@ bool Widget::clearMediaObjects(){
     }
 
     return false; // if no media objects currently alive
+}
+
+
+// Function to convert LibRaw image to QImage
+QImage Widget::libRawToQImage(const QString imagePath) {
+
+    // Initialize LibRaw
+    LibRaw rawProcessor;
+
+    // Load the NEF file
+    if (rawProcessor.open_file(imagePath.toUtf8().constData()) != LIBRAW_SUCCESS) {
+        qWarning() << "Failed to open NEF file";
+        qWarning() << rawProcessor.open_file(imagePath.toUtf8().constData());
+        return QImage();
+    }
+
+    // Process the image
+    if (rawProcessor.unpack() != LIBRAW_SUCCESS || rawProcessor.dcraw_process() != LIBRAW_SUCCESS) {
+        qWarning() << "Failed to process NEF file";
+        return QImage();
+    }
+
+    // Get the processed image data
+    const libraw_processed_image_t *image = rawProcessor.dcraw_make_mem_image();
+
+    if (!image) {
+        qWarning() << "Failed to get image data from LibRaw";
+        return QImage();
+    }
+
+    // Convert to QImage
+    QImage qImage(image->data, image->width, image->height, image->width * 3, QImage::Format_RGB888);
+
+
+
+    if (qImage.isNull()) {
+        qWarning() << "Failed to convert image to QImage";
+        return QImage();
+    }
+
+    return qImage.copy();  // Return a copy to avoid memory issues
 }
