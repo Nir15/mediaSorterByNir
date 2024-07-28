@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.5)
 
 project(mediaSorterByNir VERSION 0.1 LANGUAGES CXX)
 
+message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
+message(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
+
+# when using libraw.dll the optimization makes the program crash, need to not optimize
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O0 -DNDEBUG")
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -36,8 +43,9 @@ set(PROJECT_SOURCES
 )
 
 include_directories(C:/Qt/QtProjects/mediaSorterByNir/libRaw/libraw)
-set(LIBRAW_LIB_PATH "C:/Qt/QtProjects/mediaSorterByNir/libRaw/lib")
-set(LIBRAW_LIB "${LIBRAW_LIB_PATH}/libraw.a")
+set(LIBRAW_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libRaw/lib")
+set(LIBRAW_LIB "${LIBRAW_LIB_PATH}/libraw.dll")
+link_directories("${LIBRAW_LIB_PATH}/libraw.dll")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mediaSorterByNir
@@ -63,6 +71,13 @@ else()
 endif()
 
 target_link_libraries(mediaSorterByNir PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia Qt${QT_VERSION_MAJOR}::MultimediaWidgets ${LIBRAW_LIB})
+
+# Ensure the DLL is copied to the output directory
+add_custom_command(TARGET mediaSorterByNir POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_CURRENT_SOURCE_DIR}/libRaw/lib/libraw.dll"
+    $<TARGET_FILE_DIR:mediaSorterByNir>
+)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

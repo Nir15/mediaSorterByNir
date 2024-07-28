@@ -1,6 +1,6 @@
 all: library all_samples
 
-CFLAGS=-O3  -I. -w
+CFLAGS=-O3 -I. -w
 CC=gcc
 CXX=g++
 
@@ -36,14 +36,13 @@ CXX=g++
 
 CSTFLAGS=$(CFLAGS) -DLIBRAW_NOTHREADS
 
-LIB_OBJECTS= object/libraw_datastream.o object/libraw_c_api.o \
+LIB_OBJECTS=object/libraw_datastream.o object/libraw_c_api.o \
   object/cameralist.o object/fuji_compressed.o \
   object/crx.o object/fp_dng.o object/decoders_libraw.o \
   object/unpack.o object/unpack_thumb.o \
   object/rawspeed_glue.o object/dngsdk_glue.o \
   object/colorconst.o object/utils_libraw.o object/init_close_utils.o \
-  object/decoder_info.o object/open.o object/phaseone_processing.o \
-  object/thumb_utils.o \
+  object/decoder_info.o object/open.o object/phaseone_processing.o object/thumb_utils.o \
   object/tiff_writer.o object/subtract_black.o object/postprocessing_utils.o \
   object/dcraw_process.o object/raw2image.o object/mem_image.o \
   object/x3f_utils_patched.o object/x3f_parse_process.o \
@@ -68,16 +67,14 @@ LIB_OBJECTS= object/libraw_datastream.o object/libraw_c_api.o \
   object/file_write.o \
   object/ext_preprocess.o   object/apply_profile.o
 
-
-
 LR_INCLUDES=libraw/libraw.h libraw/libraw_alloc.h \
   libraw/libraw_const.h libraw/libraw_datastream.h \
   libraw/libraw_internal.h libraw/libraw_types.h \
   libraw/libraw_version.h
 
-library: lib/libraw.a
+library: lib/libraw.a lib/libraw.dll
 
-all_samples: bin/raw-identify bin/simple_dcraw  bin/dcraw_emu bin/dcraw_half bin/mem_image \
+all_samples: bin/raw-identify bin/simple_dcraw bin/dcraw_emu bin/dcraw_half bin/mem_image \
              bin/unprocessed_raw bin/4channels bin/multirender_test bin/postprocessing_benchmark \
              bin/rawtextdump
 
@@ -88,52 +85,53 @@ install: library
 install-binaries: all_samples
 	@if [ -d /usr/local/bin ] ; then cp bin/[a-z]* /usr/local/bin/ ; else echo 'no /usr/local/bin' ; fi
 
-
 #binaries
 
 bin/raw-identify: lib/libraw.a samples/raw-identify.cpp
-	${CXX} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/raw-identify samples/raw-identify.cpp -L./lib -lraw  -lws2_32 -lm ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/raw-identify samples/raw-identify.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/unprocessed_raw: lib/libraw.a samples/unprocessed_raw.cpp
-	${CXX} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/unprocessed_raw samples/unprocessed_raw.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/unprocessed_raw samples/unprocessed_raw.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/4channels: lib/libraw.a samples/4channels.cpp
-	${CXX} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/4channels samples/4channels.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/4channels samples/4channels.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/rawtextdump: lib/libraw.a samples/rawtextdump.cpp
-	${CXX} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/rawtextdump samples/rawtextdump.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/rawtextdump samples/rawtextdump.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/simple_dcraw: lib/libraw.a samples/simple_dcraw.cpp
-	${CXX} -DLIBRAW_NOTHREADS   ${CFLAGS} -o bin/simple_dcraw samples/simple_dcraw.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/simple_dcraw samples/simple_dcraw.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/multirender_test: lib/libraw.a samples/multirender_test.cpp
-	${CXX} -DLIBRAW_NOTHREADS   ${CFLAGS} -o bin/multirender_test samples/multirender_test.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/multirender_test samples/multirender_test.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/postprocessing_benchmark: lib/libraw.a samples/postprocessing_benchmark.cpp
-	${CXX} -DLIBRAW_NOTHREADS   ${CFLAGS} -o bin/postprocessing_benchmark samples/postprocessing_benchmark.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/postprocessing_benchmark samples/postprocessing_benchmark.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/mem_image: lib/libraw.a samples/mem_image_sample.cpp
-	${CXX} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/mem_image samples/mem_image_sample.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/mem_image samples/mem_image_sample.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 bin/dcraw_half: lib/libraw.a object/dcraw_half.o
-	${CC} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/dcraw_half object/dcraw_half.o -L./lib -lraw  -lws2_32 -lm -lstdc++  ${LDADD}
+	${CC} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/dcraw_half object/dcraw_half.o -L./lib -lraw -lws2_32 -lm -lstdc++ ${LDADD}
 
 bin/dcraw_emu: lib/libraw.a samples/dcraw_emu.cpp
-	${CXX} -DLIBRAW_NOTHREADS  ${CFLAGS} -o bin/dcraw_emu samples/dcraw_emu.cpp -L./lib -lraw  -lws2_32 -lm  ${LDADD}
+	${CXX} -DLIBRAW_NOTHREADS ${CFLAGS} -o bin/dcraw_emu samples/dcraw_emu.cpp -L./lib -lraw -lws2_32 -lm ${LDADD}
 
 #objects
 
 object/dcraw_half.o: samples/dcraw_half.c
-	${CC} -c -DLIBRAW_NOTHREADS   ${CFLAGS} -o object/dcraw_half.o samples/dcraw_half.c
+	${CC} -c -DLIBRAW_NOTHREADS ${CFLAGS} -o object/dcraw_half.o samples/dcraw_half.c
 
 object/half_mt.o: samples/half_mt.c
-	${CC} -c -pthread   ${CFLAGS} -o object/half_mt.o samples/half_mt.c
-
+	${CC} -c -pthread ${CFLAGS} -o object/half_mt.o samples/half_mt.c
 
 lib/libraw.a: ${LIB_OBJECTS}
-#	rm -f lib/libraw.a
+	rm -f lib/libraw.a
 	ar crv lib/libraw.a ${LIB_OBJECTS}
 	ranlib lib/libraw.a
+
+lib/libraw.dll: ${LIB_OBJECTS}
+	${CXX} -shared -o lib/libraw.dll ${LIB_OBJECTS} -lws2_32 -lm ${LDADD}
 
 lib/libraw_r.a: ${LIB_MT_OBJECTS}
 	rm -f lib/libraw_r.a
@@ -142,7 +140,7 @@ lib/libraw_r.a: ${LIB_MT_OBJECTS}
 
 clean:
 	rm -fr bin/*.dSYM
-	rm -f *.o *~ src/*~ samples/*~ internal/*~ libraw/*~ lib/lib*.a bin/[4a-z]* object/*o dcraw/*~ doc/*~ bin/*~ src/*/*~
+	rm -f *.o *~ src/*~ samples/*~ internal/*~ libraw/*~ lib/lib*.a lib/*.dll bin/[4a-z]* object/*o dcraw/*~ doc/*~ bin/*~
 
 ### generated
 object/libraw_c_api.o: src/libraw_c_api.cpp
