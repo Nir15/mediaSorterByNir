@@ -16,9 +16,6 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
      <item>
       <widget class="QLabel" name="label">
        <property name="font">
@@ -39,6 +36,26 @@ Sort Master!</string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="text">
+        <string>The app is currently supporting the following formats:
+JPG, TIFF, NEF*, MP4.
+*Note that NEF format is working slowlier than others when displaying it on screen.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

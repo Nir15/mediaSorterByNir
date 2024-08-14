@@ -16,10 +16,10 @@
 #include <libraw.h>
 
 #ifdef Q_OS_WIN
-#include <windows.h>
+    #include <windows.h>
 #elif defined(Q_OS_MAC)
-#include <sys/stat.h>
-#include <sys/types.h>
+    #include <sys/stat.h>
+    #include <sys/types.h>
 #endif
 
 #define MAX_WIDTH_HEIGHT 700.0
@@ -180,10 +180,10 @@ void Widget::pathsNextButtonClicked()
     QVBoxLayoutPtr->addWidget(m_mainSortingWindowPtr);
     this->setLayout(QVBoxLayoutPtr);
 
-    m_mainSortingWindowPtr->getFilterTextEdit()->clear(); // clear filtered search
+    m_mainSortingWindowPtr->getFilterTextEdit()->clear();           // clear filtered search
     m_mainSortingWindowPtr->getUndoPushButton()->setVisible(false); // hide undo button
-    m_mainSortingWindowPtr->getVxTextLabel()->clear(); // hide vx text label
-    m_mainSortingWindowPtr->getVxIconLabel()->clear(); // hide vx icon label
+    m_mainSortingWindowPtr->getVxTextLabel()->clear();              // hide vx text label
+    m_mainSortingWindowPtr->getVxIconLabel()->clear();              // hide vx icon label
     ClickableLabel::s_chosenLabelPtr = nullptr;
 
 
@@ -226,10 +226,10 @@ void Widget::pathsNextButtonClicked()
 void Widget::pathsBrowseSrcButtonClicked()
 {
         m_srcDirPath = QFileDialog::getExistingDirectory(
-            this,                               // Parent widget
-            tr("Source Directory"),             // Dialog title
-            "C:\\",                                 // Starting directory (optional)
-            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks          // Options to show directories only
+            this,                                                           // Parent widget
+            tr("Source Directory"),                                         // Dialog title
+            "C:\\",                                                         // Starting directory (optional)
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks    // Options to show directories only
         );
 
 
@@ -273,13 +273,13 @@ void Widget::pathsBrowseSrcButtonClicked()
         if (jpgCount > 0){
             m_pathsScreenPtr->getSrcTextEdit()->setText(m_srcDirPath);
             QString tempJpgCount = QString("<span style='color:red; font-weight:bold;'>%1</span>").arg(QString::number(jpgCount));
-            QString srcImagesCount = "The directory contains " + tempJpgCount + " images.";
+            QString srcImagesCount = "The directory contains " + tempJpgCount + " media items.";
             m_pathsScreenPtr->getSrcImgCntTextEdit()->setText(srcImagesCount);
         }
 
         else {
             int ret = QMessageBox::critical(this,"Error!",
-                                            "The selected folder cotains 0 images.\n this folder cannot be selected. please choose a folder containing at least 1 image.",
+                                            "The selected folder cotains 0 media items.\n this folder cannot be selected. please choose a folder containing at least 1 media item.",
                                             QMessageBox::Ok | QMessageBox::Cancel);
 
             if (ret == QMessageBox::Ok){
@@ -299,10 +299,10 @@ void Widget::pathsBrowseSrcButtonClicked()
 void Widget::pathsBrowseDstButtonClicked()
 {
     m_dstDirPath = QFileDialog::getExistingDirectory(
-        this,                               // Parent widget
-        tr("Source Directory"),             // Dialog title
-        "C:\\",                                 // Starting directory (optional)
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks          // Options to show directories only
+        this,                                                           // Parent widget
+        tr("Destination Directory"),                                    // Dialog title
+        "C:\\",                                                         // Starting directory (optional)
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks    // Options to show directories only
         );
 
 
@@ -354,7 +354,7 @@ void Widget::mainSortingBackButtonClicked()
     QVBoxLayoutPtr->addWidget(m_pathsScreenPtr);
     this->setLayout(QVBoxLayoutPtr);
 
-    m_undoVector.clear(); // remove all items from undo vector, since it is not required due to screen change
+    m_undoVector.clear();   // remove all items from undo vector, since it is not required due to screen change
     m_undoVector.squeeze(); // clear all memory being by the vector used on the heap
 
     // when finish program, we must delete all images (and folder) deleted by the user,
@@ -436,8 +436,6 @@ void Widget::keyPressEvent(QKeyEvent *event)
                 }
                 else{
                     emit m_mainSortingWindowPtr->getDeleteButton()->clicked();
-                    // if (m_customMessageBoxPtr->userChoiceOfDeletion == QMessageBox::Yes)
-                    //     deleteImage();
                 }
                 qDebug() << "D!";
                 break;
@@ -488,8 +486,6 @@ void Widget::switchImage(imageSwitchEnum is){
 
     // the call for this function may occur via the next and previous buttons, but also from filter textedit.
     // therefor it is important to find out what is the reason of calling and adjust the image list apropriately
-    // QStringList localImageList = m_imagesListFiltered.empty() ? m_imagesList : m_imagesListFiltered;
-    // m_isFilteredImageList = m_imagesListFiltered.empty() ? false : true;
     QStringList localImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? m_imagesList : m_imagesListFiltered;
     m_isFilteredImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? false : true; // check if there is text in filter
 
@@ -546,7 +542,7 @@ void Widget::switchImage(imageSwitchEnum is){
         m_mainSortingWindowPtr->getPreviousButton()->setEnabled(false);
         m_mainSortingWindowPtr->getDeleteButton()->setEnabled(false);
         m_mainSortingWindowPtr->getRotateClockwiseButton()->setEnabled(false);
-        m_mainSortingWindowPtr->getfilterNumImagesLeftLabel()->setText("No images match this filter.");
+        m_mainSortingWindowPtr->getfilterNumImagesLeftLabel()->setText("No media items match this filter.");
         hideAllVideoInterface();
         clearMediaObjects();
         return;
@@ -598,13 +594,11 @@ void Widget::switchImage(imageSwitchEnum is){
         showAllVideoInterface();
     }
 
-    else if (fileInfo.suffix() == "nef" || fileInfo.suffix() == "NEF"){
+    else if (fileInfo.suffix() == "nef" || fileInfo.suffix() == "NEF"){ // .nef file
         // Convert LibRaw image to QImage
         QImage image = libRawToQImage(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
-        // QImage image = libRawToQImage("C:/_NZ22383.nef");
 
         m_imagePixmap = m_imagePixmap.fromImage(image);
-        // m_imagePixmap = QPixmap(image.width(), image.height());
         m_imagePixmap = m_imagePixmap.transformed(m_transformImage); // make the rotation if needed
 
         qDebug() << QString(":/") + localImageList[m_imageCounter];
@@ -622,24 +616,6 @@ void Widget::switchImage(imageSwitchEnum is){
         qDebug() << "width = " << m_imagePixmap.width();
         qDebug() << "height = " << m_imagePixmap.height();
         m_mainSortingWindowPtr->getImageLabel()->setPixmap(m_imagePixmap.scaled(width*scaleFactor,height*scaleFactor,Qt::KeepAspectRatio,Qt::SmoothTransformation)); // image presented in label
-        // // Create a QLabel to display the image
-        // QLabel label;
-        // label.setWindowTitle("NEF Image Viewer");
-
-        // Get the available screen size (or set a specific size)
-        // QSize screenSize = label.size();
-        // if (screenSize.isEmpty()) {
-        //     screenSize = QSize(800, 600); // Default size if QLabel has no size
-        // }
-
-        // Scale the image to fit within the screen size while maintaining aspect ratio
-        // QPixmap pixmap = QPixmap::fromImage(image);
-        // QPixmap scaledPixmap = pixmap.scaled(screenSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        // // Set the scaled pixmap to the QLabel
-        // label.setPixmap(scaledPixmap);
-        // label.resize(scaledPixmap.size());
-        // label.show();
     }
 
     else { // image file (.jpg or .tif)
@@ -1108,22 +1084,17 @@ void Widget::CurrentlyInLabelClicked()
 // this has to be done since there are 4 keys which are taken for keyboard shortcuts: C,D,M,R
 char Widget::asciiToChar(const char c)
 {
-    // qDebug() << "recieved character" << c;
     switch(c){
         case 'C':
-            // qDebug() << "returned character E";
             return 'E';
             break;
         case 'D':
-            // qDebug() << "returned character F";
             return 'F';
             break;
         case 'M':
-            // qDebug() << "returned character P";
             return 'P';
             break;
         case 'R':
-            // qDebug() << "returned character V";
             return 'V';
             break;
         default:
@@ -1131,19 +1102,15 @@ char Widget::asciiToChar(const char c)
     }
 
     if (c == 'A' || c == 'B'){
-        // qDebug() << "returned character " << (char)c;
         return c;
     }
     else if (c >= 'E' && c <= 'J'){
-        // qDebug() << "returned character " << (char)(c + 2);
         return c + 2;
     }
     else if (c >= 'K' && c <= 'N') {
-        // qDebug() << "returned character " << (char)(c + 3);
         return c + 3;
     }
     else { // c >= 'S'
-        // qDebug() << "returned character " << (char)(c + 4);
         return c + 4;
     }
 }
@@ -1518,17 +1485,34 @@ bool Widget::clearMediaObjects(){
 }
 
 
+// ---------------------libRawToQImage()-------------------------------------------
 // Function to convert LibRaw image to QImage
 QImage Widget::libRawToQImage(const QString imagePath) {
 
     // Initialize LibRaw
     LibRaw rawProcessor;
 
+    QString tempPath;
+
     // Load the NEF file
     if (rawProcessor.open_file(imagePath.toUtf8().constData()) != LIBRAW_SUCCESS) {
         qWarning() << "Failed to open NEF file";
         qWarning() << rawProcessor.open_file(imagePath.toUtf8().constData());
-        return QImage();
+
+        // since the LibRaw object can't read paths with non-english names, a small behind
+        // the scenes adjustment is taking place. The original NEF image is moved to
+        // a path which is readable for LibRaw, then after reading and transforming it into
+        // QImage object it is returned to the original location.
+        QFile nefFile(imagePath);
+        tempPath = QDir::homePath() + "/temp.NEF";
+        if (!nefFile.rename(tempPath)){ // if image could not be copied - abort
+            return QImage();
+        }
+        if (rawProcessor.open_file(tempPath.toUtf8().constData()) != LIBRAW_SUCCESS){ // if image could not be opened - abort
+            qWarning() << "Failed to open NEF file";
+            qWarning() << rawProcessor.open_file(imagePath.toUtf8().constData());
+            return QImage();
+        }
     }
 
     // Process the image
@@ -1548,7 +1532,12 @@ QImage Widget::libRawToQImage(const QString imagePath) {
     // Convert to QImage
     QImage qImage(image->data, image->width, image->height, image->width * 3, QImage::Format_RGB888);
 
-
+    // return the situation beck to normal if necessary
+    if (!tempPath.isEmpty()){
+        rawProcessor.recycle(); // release all resources from image
+        QFile copiedFile(tempPath);
+        copiedFile.rename(imagePath); // move back to original folder
+    }
 
     if (qImage.isNull()) {
         qWarning() << "Failed to convert image to QImage";

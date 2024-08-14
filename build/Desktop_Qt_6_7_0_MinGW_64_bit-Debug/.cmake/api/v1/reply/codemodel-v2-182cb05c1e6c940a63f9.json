@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-edd60f3126491095a33d.json",
+					"jsonFile" : "directory-.-Debug-0782c3d31bceca788808.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "mediaSorterByNir::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-mediaSorterByNir-Debug-e7bd4363e1c8acaa220b.json",
+					"jsonFile" : "target-mediaSorterByNir-Debug-3f1f7557c68041fa038d.json",
 					"name" : "mediaSorterByNir",
 					"projectIndex" : 0
 				},
