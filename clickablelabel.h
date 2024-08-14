@@ -19,6 +19,7 @@ public:
 signals:
     void clicked();
     void clickedWithCtrl();
+    void clickedImageLabel();
     void keyPressSignal(QKeyEvent* event);
 
 protected:

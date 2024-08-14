@@ -74,7 +74,12 @@ Widget::Widget(QWidget *parent)
     connect(m_pathsScreenPtr->getSourceButton(), SIGNAL(clicked()),
             this, SLOT(pathsBrowseSrcButtonClicked()));
 
+
+
     // ----------- mainSortingWindow ---------
+
+    m_mainSortingWindowPtr->getImageLabel()->installEventFilter(this); // Tie the event of clicking on image label to start/pause videos displayed
+
     connect(m_mainSortingWindowPtr->getBackButton(), &QPushButton::clicked,
             [=](){mainSortingBackButtonClicked();});
 
@@ -249,6 +254,8 @@ void Widget::pathsBrowseSrcButtonClicked()
                                                         << "*.TIF"
                                                         << "*.tiff"
                                                         << "*.TIFF"
+                                                        << "*.svg"
+                                                        << "*.SVG"
                                                         << "*.nef"
                                                         << "*.NEF",
                                                         QDir::Files);
@@ -589,7 +596,7 @@ void Widget::switchImage(imageSwitchEnum is){
 
     m_mainSortingWindowPtr->getImageLabel()->clear();
 
-    if (fileInfo.suffix() == "mp4"){ // video file
+    if (fileInfo.suffix() == "mp4" || fileInfo.suffix() == "MP4"){ // video file
         loadNewVideo(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
         showAllVideoInterface();
     }
@@ -1545,4 +1552,20 @@ QImage Widget::libRawToQImage(const QString imagePath) {
     }
 
     return qImage.copy();  // Return a copy to avoid memory issues
+}
+
+
+// ---------------------eventFilter(QObject *watched, QEvent *event)-------------------------------------------
+// Handles clicks over imageLabel, so it would activate start/pause when displaying a video
+bool Widget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress) {
+        QStringList localImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? m_imagesList : m_imagesListFiltered;
+        QFileInfo fileInfo(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
+        if (fileInfo.suffix() == "mp4" || fileInfo.suffix() == "MP4"){
+            playPausePushButtonClicked();
+        }
+        return true;
+    }
+    return false; // Event was not handled
 }

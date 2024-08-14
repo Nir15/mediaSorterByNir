@@ -23,37 +23,37 @@ class MainSortingWindow : public QWidget
 public:
     explicit MainSortingWindow(QWidget *parent = nullptr);
     ~MainSortingWindow();
-    QPushButton* getBackButton();
-    QPushButton* getNextButton();
-    QPushButton* getPreviousButton();
-    QPushButton* getDeleteButton();
-    QPushButton* getRotateClockwiseButton();
-    QPushButton* getUndoPushButton();
+    QPushButton*                getBackButton();
+    QPushButton*                getNextButton();
+    QPushButton*                getPreviousButton();
+    QPushButton*                getDeleteButton();
+    QPushButton*                getRotateClockwiseButton();
+    QPushButton*                getUndoPushButton();
     //video related objects
-    QPushButton* getVolumePushButton();
-    QPushButton* getStopPushButton();
-    QPushButton* getBackwardsPushButton();
-    QPushButton* getForwardPushButton();
-    QPushButton* getPlayPausePushButton();
-    QLabel* getTotalTimeLabel();
-    QLabel* getCurrentTimeLabel();
-    QSlider* getDurationHorizontalSlider();
-    QSlider* getVolumeHorizontalSlider();
+    QPushButton*                getVolumePushButton();
+    QPushButton*                getStopPushButton();
+    QPushButton*                getBackwardsPushButton();
+    QPushButton*                getForwardPushButton();
+    QPushButton*                getPlayPausePushButton();
+    QLabel*                     getTotalTimeLabel();
+    QLabel*                     getCurrentTimeLabel();
+    QSlider*                    getDurationHorizontalSlider();
+    QSlider*                    getVolumeHorizontalSlider();
     //video related objects
-    QLabel* getImageLabel();
-    QLabel* getImageSizeLabel();
-    QLabel* getImageNameLabel();
-    QLabel* getDateModifiedLabel();
-    QLabel* getfilterNumImagesLeftLabel();
-    QLabel* getVxIconLabel();
-    QLabel* getVxTextLabel();
-    QLabel* getFoldersAvailableLabel();
-    QLabel* getCurrentlyInLabel();
-    QScrollArea* getCurrentlyInScrollArea();
-    QScrollArea* getFoldersAvailableScrollArea();
-    QTextEdit* getFilterTextEdit();
-    QCheckBox* getCopyCheckBox();
-    QCheckBox* getMoveCheckBox();
+    QLabel*                     getImageLabel();
+    QLabel*                     getImageSizeLabel();
+    QLabel*                     getImageNameLabel();
+    QLabel*                     getDateModifiedLabel();
+    QLabel*                     getfilterNumImagesLeftLabel();
+    QLabel*                     getVxIconLabel();
+    QLabel*                     getVxTextLabel();
+    QLabel*                     getFoldersAvailableLabel();
+    QLabel*                     getCurrentlyInLabel();
+    QScrollArea*                getCurrentlyInScrollArea();
+    QScrollArea*                getFoldersAvailableScrollArea();
+    QTextEdit*                  getFilterTextEdit();
+    QCheckBox*                  getCopyCheckBox();
+    QCheckBox*                  getMoveCheckBox();
 
     QStringList filterImageList(const QStringList& originalImageList, const QString& filter);
 

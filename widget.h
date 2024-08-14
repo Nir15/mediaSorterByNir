@@ -182,6 +182,7 @@ private: // fields
     unsigned int                m_srcFolderCounter {0};
 
 protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 };
 #endif // WIDGET_H

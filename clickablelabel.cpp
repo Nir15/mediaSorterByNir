@@ -30,8 +30,6 @@ void ClickableLabel::mousePressEvent(QMouseEvent* event)
             palette.setColor(QPalette::Window, Qt::white);
             s_chosenLabelPtr->setAutoFillBackground(true);
             s_chosenLabelPtr->setPalette(palette);
-            // s_chosenLabelPtr->setStyleSheet("QLabel { background-color: white; }");
-
         }
         s_chosenLabelPtr = this; // set the pointer to the current label clicked
 

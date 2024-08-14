@@ -11,7 +11,7 @@ void hoveredObject::setHoveredText(const QString text)
 
 
 
-
+// addressing the case of hovering over a label for displaying text with tooltip
 bool hoveredObject::eventFilter(QObject *watched, QEvent *event)
 {
     // Check if the event is a QEvent::Enter, meaning object is hovered

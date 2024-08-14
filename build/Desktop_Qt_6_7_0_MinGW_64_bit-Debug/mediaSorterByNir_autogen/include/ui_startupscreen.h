@@ -25,6 +25,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
     QLabel *label;
+    QLabel *label_2;
     QPushButton *startSortingButton;
 
     void setupUi(QWidget *startupScreen)
@@ -36,7 +37,6 @@ public:
         horizontalLayout->setObjectName("horizontalLayout");
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName("verticalLayout");
-        verticalLayout->setSizeConstraint(QLayout::SetMinimumSize);
         label = new QLabel(startupScreen);
         label->setObjectName("label");
         QFont font;
@@ -49,6 +49,16 @@ public:
         label->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(label);
+
+        label_2 = new QLabel(startupScreen);
+        label_2->setObjectName("label_2");
+        QFont font1;
+        font1.setPointSize(12);
+        label_2->setFont(font1);
+        label_2->setFrameShape(QFrame::Box);
+        label_2->setAlignment(Qt::AlignCenter);
+
+        verticalLayout->addWidget(label_2);
 
         startSortingButton = new QPushButton(startupScreen);
         startSortingButton->setObjectName("startSortingButton");
@@ -69,6 +79,9 @@ public:
         startupScreen->setWindowTitle(QCoreApplication::translate("startupScreen", "Form", nullptr));
         label->setText(QCoreApplication::translate("startupScreen", "Welcome to\n"
 "Sort Master!", nullptr));
+        label_2->setText(QCoreApplication::translate("startupScreen", "The app is currently supporting the following formats:\n"
+"JPG, TIFF, NEF*, MP4.\n"
+"*Note that NEF format is working slowlier than others when displaying it on screen.", nullptr));
         startSortingButton->setText(QCoreApplication::translate("startupScreen", "Start Sorting", nullptr));
     } // retranslateUi
 

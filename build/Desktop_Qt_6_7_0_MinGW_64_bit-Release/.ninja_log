@@ -71,3 +71,12 @@
 260	2749	7453313844894361	CMakeFiles/mediaSorterByNir.dir/mainsortingwindow.cpp.obj	96345fcc709571cd
 256	6873	7453313886106391	CMakeFiles/mediaSorterByNir.dir/widget.cpp.obj	34da6a7c8c3bcd41
 6873	7180	7453313888721328	mediaSorterByNir.exe	59cf64b2d32a5aa6
+22	275	7453322119627866	mediaSorterByNir_autogen/timestamp	da356c26c2fb4ea0
+22	275	7453322119627866	mediaSorterByNir_autogen/mocs_compilation.cpp	da356c26c2fb4ea0
+22	275	7453322119627866	C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Release/mediaSorterByNir_autogen/timestamp	da356c26c2fb4ea0
+22	275	7453322119627866	C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Release/mediaSorterByNir_autogen/mocs_compilation.cpp	da356c26c2fb4ea0
+312	3288	7453322149782253	CMakeFiles/mediaSorterByNir.dir/startupscreen.cpp.obj	2b3245cb93a9a6da
+307	3493	7453322151820315	CMakeFiles/mediaSorterByNir.dir/pathsscreen.cpp.obj	8cb3d5964b23b510
+320	3805	7453322154956803	CMakeFiles/mediaSorterByNir.dir/mainsortingwindow.cpp.obj	96345fcc709571cd
+316	9265	7453322209508966	CMakeFiles/mediaSorterByNir.dir/widget.cpp.obj	34da6a7c8c3bcd41
+9265	9629	7453322212693346	mediaSorterByNir.exe	59cf64b2d32a5aa6

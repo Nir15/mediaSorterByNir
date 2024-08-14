@@ -181,8 +181,6 @@ QStringList MainSortingWindow::filterImageList(const QStringList& originalImageL
     return temp;
 }
 
-
-
 // activate the functions which are responsible for everything that keyboard press do
 void MainSortingWindow::keyPressEvent(QKeyEvent *event)
 {
