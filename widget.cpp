@@ -1499,7 +1499,7 @@ QImage Widget::libRawToQImage(const QString imagePath) {
         qWarning() << "Failed to open NEF file";
         qWarning() << rawProcessor.open_file(imagePath.toUtf8().constData());
 
-        // since the LibRaw object can't read paths with non-english names, a small behind
+        // since LibRaw object can't read paths with non-english names, a small behind
         // the scenes adjustment is taking place. The original NEF image is moved to
         // a path which is readable for LibRaw, then after reading and transforming it into
         // QImage object it is returned to the original location.
