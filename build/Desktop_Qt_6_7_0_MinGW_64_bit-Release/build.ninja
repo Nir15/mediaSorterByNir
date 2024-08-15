@@ -121,6 +121,13 @@ build CMakeFiles/mediaSorterByNir.dir/hoveredobject.cpp.obj: CXX_COMPILER__media
   OBJECT_DIR = CMakeFiles\mediaSorterByNir.dir
   OBJECT_FILE_DIR = CMakeFiles\mediaSorterByNir.dir
 
+build CMakeFiles/mediaSorterByNir.dir/appIcon.rc.obj: RC_COMPILER__mediaSorterByNir_unscanned_Release C$:/Qt/QtProjects/mediaSorterByNir/appIcon.rc || cmake_object_order_depends_target_mediaSorterByNir
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\mediaSorterByNir.dir\appIcon.rc.obj.d
+  INCLUDES = -I C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Release/mediaSorterByNir_autogen/include -I C:/Qt/QtProjects/mediaSorterByNir/libRaw/libraw -I C:/Qt/6.7.0/mingw_64/include/QtCore -I C:/Qt/6.7.0/mingw_64/include -I C:/Qt/6.7.0/mingw_64/mkspecs/win32-g++ -I C:/Qt/6.7.0/mingw_64/include/QtWidgets -I C:/Qt/6.7.0/mingw_64/include/QtGui -I C:/Qt/6.7.0/mingw_64/include/QtMultimedia -I C:/Qt/6.7.0/mingw_64/include/QtNetwork -I C:/Qt/6.7.0/mingw_64/include/QtMultimediaWidgets
+  OBJECT_DIR = CMakeFiles\mediaSorterByNir.dir
+  OBJECT_FILE_DIR = CMakeFiles\mediaSorterByNir.dir
+
 build CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/EWIEGA46WW/qrc_resource.cpp.obj: CXX_COMPILER__mediaSorterByNir_unscanned_Release C$:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Release/mediaSorterByNir_autogen/EWIEGA46WW/qrc_resource.cpp || cmake_object_order_depends_target_mediaSorterByNir
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
   DEP_FILE = CMakeFiles\mediaSorterByNir.dir\mediaSorterByNir_autogen\EWIEGA46WW\qrc_resource.cpp.obj.d
@@ -137,7 +144,7 @@ build CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/EWIEGA46WW/qrc_re
 #############################################
 # Link the executable mediaSorterByNir.exe
 
-build mediaSorterByNir.exe: CXX_EXECUTABLE_LINKER__mediaSorterByNir_Release CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/mocs_compilation.cpp.obj CMakeFiles/mediaSorterByNir.dir/main.cpp.obj CMakeFiles/mediaSorterByNir.dir/widget.cpp.obj CMakeFiles/mediaSorterByNir.dir/startupscreen.cpp.obj CMakeFiles/mediaSorterByNir.dir/pathsscreen.cpp.obj CMakeFiles/mediaSorterByNir.dir/mainsortingwindow.cpp.obj CMakeFiles/mediaSorterByNir.dir/clickablelabel.cpp.obj CMakeFiles/mediaSorterByNir.dir/custommessagebox.cpp.obj CMakeFiles/mediaSorterByNir.dir/hoveredobject.cpp.obj CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/EWIEGA46WW/qrc_resource.cpp.obj | C$:/Qt/6.7.0/mingw_64/lib/libQt6MultimediaWidgets.a C$:/Qt/QtProjects/mediaSorterByNir/libRaw/lib/libraw.dll C$:/Qt/6.7.0/mingw_64/lib/libQt6Multimedia.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Network.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Gui.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Core.a C$:/Qt/6.7.0/mingw_64/lib/libQt6EntryPoint.a || mediaSorterByNir_autogen mediaSorterByNir_autogen_timestamp_deps
+build mediaSorterByNir.exe: CXX_EXECUTABLE_LINKER__mediaSorterByNir_Release CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/mocs_compilation.cpp.obj CMakeFiles/mediaSorterByNir.dir/main.cpp.obj CMakeFiles/mediaSorterByNir.dir/widget.cpp.obj CMakeFiles/mediaSorterByNir.dir/startupscreen.cpp.obj CMakeFiles/mediaSorterByNir.dir/pathsscreen.cpp.obj CMakeFiles/mediaSorterByNir.dir/mainsortingwindow.cpp.obj CMakeFiles/mediaSorterByNir.dir/clickablelabel.cpp.obj CMakeFiles/mediaSorterByNir.dir/custommessagebox.cpp.obj CMakeFiles/mediaSorterByNir.dir/hoveredobject.cpp.obj CMakeFiles/mediaSorterByNir.dir/appIcon.rc.obj CMakeFiles/mediaSorterByNir.dir/mediaSorterByNir_autogen/EWIEGA46WW/qrc_resource.cpp.obj | C$:/Qt/6.7.0/mingw_64/lib/libQt6MultimediaWidgets.a C$:/Qt/QtProjects/mediaSorterByNir/libRaw/lib/libraw.dll C$:/Qt/6.7.0/mingw_64/lib/libQt6Multimedia.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Network.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Gui.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Core.a C$:/Qt/6.7.0/mingw_64/lib/libQt6EntryPoint.a || mediaSorterByNir_autogen mediaSorterByNir_autogen_timestamp_deps
   FLAGS = -O3 -DNDEBUG -O0 -DNDEBUG
   LINK_FLAGS = -mwindows
   LINK_LIBRARIES = C:/Qt/6.7.0/mingw_64/lib/libQt6MultimediaWidgets.a  C:/Qt/QtProjects/mediaSorterByNir/libRaw/lib/libraw.dll  C:/Qt/6.7.0/mingw_64/lib/libQt6Multimedia.a  C:/Qt/6.7.0/mingw_64/lib/libQt6Network.a  -lws2_32  C:/Qt/6.7.0/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.7.0/mingw_64/lib/libQt6Gui.a  C:/Qt/6.7.0/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.7.0/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
@@ -250,7 +257,7 @@ build mediaSorterByNir_autogen/EWIEGA46WW/qrc_resource.cpp | ${cmake_ninja_workd
 #############################################
 # Phony custom command for CMakeFiles\mediaSorterByNir_autogen_timestamp_deps
 
-build CMakeFiles/mediaSorterByNir_autogen_timestamp_deps | ${cmake_ninja_workdir}CMakeFiles/mediaSorterByNir_autogen_timestamp_deps: phony C$:/Qt/6.7.0/mingw_64/./bin/moc.exe C$:/Qt/6.7.0/mingw_64/./bin/uic.exe C$:/Qt/6.7.0/mingw_64/lib/libQt6MultimediaWidgets.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Core.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Multimedia.a
+build CMakeFiles/mediaSorterByNir_autogen_timestamp_deps | ${cmake_ninja_workdir}CMakeFiles/mediaSorterByNir_autogen_timestamp_deps: phony C$:/Qt/6.7.0/mingw_64/./bin/uic.exe C$:/Qt/6.7.0/mingw_64/./bin/moc.exe C$:/Qt/6.7.0/mingw_64/lib/libQt6Core.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.7.0/mingw_64/lib/libQt6MultimediaWidgets.a C$:/Qt/6.7.0/mingw_64/lib/libQt6Multimedia.a
 
 
 #############################################

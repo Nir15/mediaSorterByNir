@@ -78,9 +78,9 @@ public:
     {
         startupScreen->setWindowTitle(QCoreApplication::translate("startupScreen", "Form", nullptr));
         label->setText(QCoreApplication::translate("startupScreen", "Welcome to\n"
-"Sort Master!", nullptr));
+"Media Sorter By Nir!", nullptr));
         label_2->setText(QCoreApplication::translate("startupScreen", "The app is currently supporting the following formats:\n"
-"JPG, TIFF, NEF*, MP4.\n"
+"JPG, PNG, TIFF, NEF*, ICO, SVG, MP4.\n"
 "*Note that NEF format is working slowlier than others when displaying it on screen.", nullptr));
         startSortingButton->setText(QCoreApplication::translate("startupScreen", "Start Sorting", nullptr));
     } // retranslateUi

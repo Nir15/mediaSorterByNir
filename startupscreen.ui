@@ -32,7 +32,7 @@
        </property>
        <property name="text">
         <string>Welcome to
-Sort Master!</string>
+Media Sorter By Nir!</string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
@@ -54,7 +54,7 @@ Sort Master!</string>
        </property>
        <property name="text">
         <string>The app is currently supporting the following formats:
-JPG, TIFF, NEF*, MP4.
+JPG, PNG, TIFF, NEF*, ICO, SVG, MP4.
 *Note that NEF format is working slowlier than others when displaying it on screen.</string>
        </property>
        <property name="alignment">

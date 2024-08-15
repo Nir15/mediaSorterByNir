@@ -35,6 +35,9 @@ Widget::Widget(QWidget *parent)
     m_imageCounter(0)
 {
     ui->setupUi(this);
+
+    QWidget::setWindowTitle("Media Sorter By Nir");
+
     m_startupScreenPtr = new startupScreen(this);
     QVBoxLayoutPtr = new QVBoxLayout(this);
     QVBoxLayoutPtr->addWidget(m_startupScreenPtr);
@@ -256,6 +259,10 @@ void Widget::pathsBrowseSrcButtonClicked()
                                                         << "*.TIFF"
                                                         << "*.svg"
                                                         << "*.SVG"
+                                                        << "*.ico"
+                                                        << "*.ICO"
+                                                        << "*.png"
+                                                        << "*.PNG"
                                                         << "*.nef"
                                                         << "*.NEF",
                                                         QDir::Files);
@@ -268,12 +275,15 @@ void Widget::pathsBrowseSrcButtonClicked()
         // check for the number of images in directory
         int jpgCount = 0;
         for(int i=0;i<fileList.size();i++){
-            if (fileList[i].endsWith(".jpg", Qt::CaseInsensitive)  ||
-                fileList[i].endsWith(".jpeg", Qt::CaseInsensitive) ||
-                fileList[i].endsWith(".mp4", Qt::CaseInsensitive)  ||
-                fileList[i].endsWith(".tif", Qt::CaseInsensitive)  ||
-                fileList[i].endsWith(".tiff", Qt::CaseInsensitive) ||
-                fileList[i].endsWith(".nef", Qt::CaseInsensitive))
+            if (fileList[i].endsWith(".jpg",  Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".jpeg", Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".mp4",  Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".tif",  Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".tiff", Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".svg",  Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".ico",  Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".png",  Qt::CaseInsensitive)  ||
+                fileList[i].endsWith(".nef",  Qt::CaseInsensitive))
                 jpgCount++;
         }
 
@@ -625,7 +635,7 @@ void Widget::switchImage(imageSwitchEnum is){
         m_mainSortingWindowPtr->getImageLabel()->setPixmap(m_imagePixmap.scaled(width*scaleFactor,height*scaleFactor,Qt::KeepAspectRatio,Qt::SmoothTransformation)); // image presented in label
     }
 
-    else { // image file (.jpg or .tif)
+    else { // image file (.jpg or .tif or .svg)
         m_imagePixmap = QPixmap(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
         m_imagePixmap = m_imagePixmap.transformed(m_transformImage); // make the rotation if needed
 

@@ -47,10 +47,17 @@ set(LIBRAW_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libRaw/lib")
 set(LIBRAW_LIB "${LIBRAW_LIB_PATH}/libraw.dll")
 link_directories("${LIBRAW_LIB_PATH}/libraw.dll")
 
+# making sure cmake knows how to read .rc files
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    enable_language("RC")
+    set (WIN32_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/appIcon.rc")
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mediaSorterByNir
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${WIN32_RESOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET mediaSorterByNir APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

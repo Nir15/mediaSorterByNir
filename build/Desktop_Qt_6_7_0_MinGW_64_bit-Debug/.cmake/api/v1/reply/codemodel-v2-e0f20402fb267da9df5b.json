@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-c2aa2468d9e9dc75de57.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "mediaSorterByNir",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "mediaSorterByNir::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mediaSorterByNir-Debug-06cf2231700c30df597f.json",
+					"name" : "mediaSorterByNir",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mediaSorterByNir_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mediaSorterByNir_autogen-Debug-0f837a3b00f90761d33c.json",
+					"name" : "mediaSorterByNir_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mediaSorterByNir_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mediaSorterByNir_autogen_timestamp_deps-Debug-bb7afe5660c8fe46f8f5.json",
+					"name" : "mediaSorterByNir_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Qt/QtProjects/mediaSorterByNir/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug",
+		"source" : "C:/Qt/QtProjects/mediaSorterByNir"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
