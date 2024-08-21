@@ -173,6 +173,7 @@ private: // fields
     QVideoWidget*               m_videoWidget {nullptr};
     bool                        m_isMuted {false};
     bool                        m_isPaused {false};
+    float                       m_realVolume {0.0};
     qint64                      m_videoDuration;
 
     bool                        m_folderListUpdated {false};

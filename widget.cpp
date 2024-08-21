@@ -394,6 +394,10 @@ void Widget::mainSortingBackButtonClicked()
         m_pathsScreenPtr->getSrcImgCntTextEdit()->setText(srcImagesCount);
     }
 
+    // close video player
+    hideAllVideoInterface();
+    clearMediaObjects();
+
 }
 
 // ---------------------rotateButtonClicked()-------------------------------------------
@@ -1291,15 +1295,18 @@ void Widget::setAllVideoInterface()
 
     m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setMinimum(0);
     m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setMaximum(100);
-    m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setValue(10);
+    m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setValue(0);
+
+    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setPageStep(1); //make the video be controlled in 1 second jumps with sliding bar
+
 
     connect(m_mainSortingWindowPtr->getBackwardsPushButton(), &QPushButton::clicked, this, &Widget::backwardsPushButtonClicked);
     connect(m_mainSortingWindowPtr->getForwardPushButton(), &QPushButton::clicked, this, &Widget::forwardPushButtonClicked);
     connect(m_mainSortingWindowPtr->getPlayPausePushButton(), &QPushButton::clicked, this, &Widget::playPausePushButtonClicked);
     connect(m_mainSortingWindowPtr->getStopPushButton(), &QPushButton::clicked, this, &Widget::stopPushButtonClicked);
     connect(m_mainSortingWindowPtr->getVolumePushButton(), &QPushButton::clicked, this, &Widget::volumePushButtonClicked);
-    connect(m_mainSortingWindowPtr->getVolumeHorizontalSlider(), &QSlider::sliderMoved, this, &Widget::volumeHorizontalSliderValueChanged);
-    connect(m_mainSortingWindowPtr->getDurationHorizontalSlider(), &QSlider::sliderMoved, this, &Widget::durationHorizontalSliderValueChanged);
+    connect(m_mainSortingWindowPtr->getVolumeHorizontalSlider(), &QSlider::valueChanged, this, &Widget::volumeHorizontalSliderValueChanged);
+    connect(m_mainSortingWindowPtr->getDurationHorizontalSlider(), &QSlider::valueChanged, this, &Widget::durationHorizontalSliderValueChanged);
 
 
     // m_mainSortingWindowPtr->getDurationHorizontalSlider()->setRange(0, m_mediaPlayer->duration() / 1000);
@@ -1391,13 +1398,13 @@ void Widget::volumePushButtonClicked()
     {
         m_isMuted = true;
         m_mainSortingWindowPtr->getVolumePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaVolumeMuted));
-        m_audioOutput->setMuted(true);
+        m_audioOutput->setMuted(m_isMuted);
     }
     else
     {
         m_isMuted = false;
         m_mainSortingWindowPtr->getVolumePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
-        m_audioOutput->setMuted(false);
+        m_audioOutput->setMuted(m_isMuted);
     }
 }
 
@@ -1405,8 +1412,8 @@ void Widget::volumePushButtonClicked()
 // ---------------------volumeHorizontalSliderValueChanged(int value)-------------------------------------------
 void Widget::volumeHorizontalSliderValueChanged(int value)
 {
-    float realVolume = (float)value/((m_mainSortingWindowPtr->getVolumeHorizontalSlider()->maximum())*1.0);
-    m_audioOutput->setVolume(realVolume);
+    m_realVolume = (float)value/((m_mainSortingWindowPtr->getVolumeHorizontalSlider()->maximum())*1.0);
+    m_audioOutput->setVolume(m_realVolume);
 }
 
 
@@ -1414,7 +1421,7 @@ void Widget::volumeHorizontalSliderValueChanged(int value)
 // ---------------------durationHorizontalSliderValueChanged(int value)-------------------------------------------
 void Widget::durationHorizontalSliderValueChanged(int value)
 {
-    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(value); // advance duration bar by 10 seconds
+    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(value);
     m_mediaPlayer->setPosition(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() * 1000); // position is in ms, multiply by 1000 to advance video in seconds
 }
 
@@ -1479,14 +1486,14 @@ void Widget::loadNewVideo(const QString& videoName){
     m_mediaPlayer->setSource(QUrl(videoName));
     m_videoWidget->setVisible(true);
     m_videoWidget->show();
-    m_audioOutput->setMuted(false);
+    m_audioOutput->setMuted(m_isMuted);
 
     m_isPaused = false;
     m_mediaPlayer->play();
     m_mainSortingWindowPtr->getPlayPausePushButton()->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
 
-    m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setValue(0);
-    m_audioOutput->setVolume(0.0); // start video play muted
+    // m_mainSortingWindowPtr->getVolumeHorizontalSlider()->setValue(0);
+    m_audioOutput->setVolume(m_realVolume); // start video play muted
 
     connect(m_mediaPlayer, &QMediaPlayer::durationChanged, this, &Widget::durationChanged);
     connect(m_mediaPlayer, &QMediaPlayer::positionChanged, this, &Widget::positionChanged);
