@@ -418,7 +418,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Copy Image</string>
+                  <string>Copy Media Item</string>
                  </property>
                 </widget>
                </item>
@@ -437,7 +437,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Move Image</string>
+                  <string>Move Media Item</string>
                  </property>
                 </widget>
                </item>

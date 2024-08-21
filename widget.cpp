@@ -225,6 +225,8 @@ void Widget::pathsNextButtonClicked()
     }
 #endif
 
+    m_transformImage.reset();
+
     switchImage(imageSwitchEnum::Same);
 }
 
@@ -272,7 +274,7 @@ void Widget::pathsBrowseSrcButtonClicked()
 
 
 
-        // check for the number of images in directory
+        // check for the number of media items in directory
         int jpgCount = 0;
         for(int i=0;i<fileList.size();i++){
             if (fileList[i].endsWith(".jpg",  Qt::CaseInsensitive)  ||
@@ -374,7 +376,7 @@ void Widget::mainSortingBackButtonClicked()
     m_undoVector.clear();   // remove all items from undo vector, since it is not required due to screen change
     m_undoVector.squeeze(); // clear all memory being by the vector used on the heap
 
-    // when finish program, we must delete all images (and folder) deleted by the user,
+    // when finish program, we must delete all media items (and folder) deleted by the user,
     // because the deletion in the program is only pseudo deletion (see "deleteImage" method)
     QDir dir(m_srcDirPath + "/sortingAppDeletedImages");
 
@@ -384,6 +386,12 @@ void Widget::mainSortingBackButtonClicked()
         } else {
             qWarning() << "Failed to delete the folder:" << m_srcDirPath + "/sortingAppDeletedImages";
         }
+    }
+
+    if (m_imagesList.size() > 0){
+        QString tempItemsCount = QString("<span style='color:red; font-weight:bold;'>%1</span>").arg(QString::number(m_imagesList.size()));
+        QString srcImagesCount = "The directory contains " + tempItemsCount + " media items.";
+        m_pathsScreenPtr->getSrcImgCntTextEdit()->setText(srcImagesCount);
     }
 
 }
@@ -506,7 +514,7 @@ void Widget::switchImage(imageSwitchEnum is){
     QStringList localImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? m_imagesList : m_imagesListFiltered;
     m_isFilteredImageList = m_mainSortingWindowPtr->getFilterTextEdit()->toPlainText().isEmpty() ? false : true; // check if there is text in filter
 
-    m_mainSortingWindowPtr->getfilterNumImagesLeftLabel()->setText(QString::number(localImageList.size()) + " images left after filter.");
+    m_mainSortingWindowPtr->getfilterNumImagesLeftLabel()->setText(QString::number(localImageList.size()) + " media items left after filter.");
 
     m_mainSortingWindowPtr->getNextButton()->setEnabled(true);
     m_mainSortingWindowPtr->getPreviousButton()->setEnabled(true);
@@ -515,8 +523,7 @@ void Widget::switchImage(imageSwitchEnum is){
 
     if (is == imageSwitchEnum::Next){ // advance to next image in directory
         m_imageCounter++;
-        QTransform identityTransform;
-        m_transformImage = identityTransform; // reset the rotation.
+        m_transformImage.reset();
         if (m_imageCounter == localImageList.size())
             m_imageCounter = 0;
 
@@ -532,8 +539,7 @@ void Widget::switchImage(imageSwitchEnum is){
 
     else if(is == imageSwitchEnum::Previous){ // go back to previous image in directory
         m_imageCounter--;
-        QTransform identityTransform;
-        m_transformImage = identityTransform; // reset the rotation.
+        m_transformImage.reset();
         if (m_imageCounter == -1)
             m_imageCounter = localImageList.size() - 1;
 
@@ -656,6 +662,14 @@ void Widget::switchImage(imageSwitchEnum is){
         m_mainSortingWindowPtr->getImageLabel()->setPixmap(m_imagePixmap.scaled(width*scaleFactor,height*scaleFactor,Qt::KeepAspectRatio,Qt::SmoothTransformation)); // image presented in label
     }
 
+    // save the rotated image if indeed rotated
+    if (!m_transformImage.isIdentity()){
+        QImage tempImage(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
+        tempImage = tempImage.transformed(m_transformImage);
+        tempImage.save(m_srcDirPath + QString("/") + localImageList[m_imageCounter]);
+        m_transformImage.reset();
+    }
+
     // fill the list of folders available in the main destination folder chosen
     if (!m_folderListUpdated){
         findAvailableFolders();
@@ -687,7 +701,7 @@ void Widget::deleteImage()
     if (file.rename(m_srcDirPath + "/sortingAppDeletedImages/" + imageName)){
         QPixmap icon(":/icons/V_NoBackground.png");
         m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-        m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + imageName + " was deleted successfully from\n"
+        m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + imageName + " was deleted successfully from\n"
                                                           + m_srcDirPath);
 
         m_imageCounter--; // current index is the index of previous image
@@ -703,7 +717,7 @@ void Widget::deleteImage()
             QMessageBox::information(
                 this,
                 tr("Information"),
-                tr("Note: no more images left in folder. \nChoose other folder to edit."));
+                tr("Note: no more media items left in folder. \nChoose other folder to edit."));
             m_pathsScreenPtr->getNextButton()->setEnabled(false);
             m_pathsScreenPtr->getSrcTextEdit()->clear();
             m_pathsScreenPtr->getDstTextEdit()->clear();
@@ -728,7 +742,7 @@ void Widget::deleteImage()
     else {
         QPixmap icon(":/icons/X_NoBackground.png");
         m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-        m_mainSortingWindowPtr->getVxTextLabel()->setText("Image could not be deleted!");
+        m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item could not be deleted!");
     }
 }
 
@@ -820,7 +834,7 @@ void Widget::findContainingFolders(QString fileName, QString dirPath)
 
 // ---------------------AvailableFolderLabelClicked()-------------------------------------------
 // needs to be implemented for clicking the labels in the FoldersAvailableScrollArea
-// when clicked, the image should be copied to the selected folder, and add the name of the
+// when clicked, the media item should be copied to the selected folder, and add the name of the
 // folder to the list in Currently-in scroll area. a call for switchImage(imageSwitchEnum::Same) is recommended.
 
 void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
@@ -844,12 +858,12 @@ void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
     QString src = m_srcDirPath + "/" + imageName;
     QString dst = m_dstDirPath + "/" + clickedFolder + "/" + imageName;
 
-    if (m_mainSortingWindowPtr->m_buttonGroupPtr->checkedButton()->text() == "Copy Image"){
+    if (m_mainSortingWindowPtr->m_buttonGroupPtr->checkedButton()->text() == "Copy Media Item"){
 
         if (QFile::copy(src,dst)){
             QPixmap icon(":/icons/V_NoBackground.png");
             m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-            m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + imageName + " copied successfully from\n"
+            m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + imageName + " copied successfully from\n"
                                                               + m_srcDirPath + "\nto\n"
                                                               + m_dstDirPath + "/" + clickedFolder);
 
@@ -865,7 +879,7 @@ void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
         else {
             QPixmap icon(":/icons/X_NoBackground.png");
             m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-            m_mainSortingWindowPtr->getVxTextLabel()->setText("Image copy failed!");
+            m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item copy failed!");
         }
 
         findContainingFolders(imageName,m_dstDirPath); // this is necessary for updating the list of folders containing the image
@@ -881,7 +895,7 @@ void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
         if (file.rename(m_dstDirPath + "/" + clickedFolder + "/" + imageName)){
             QPixmap icon(":/icons/V_NoBackground.png");
             m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-            m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + imageName + " moved successfully from\n"
+            m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + imageName + " moved successfully from\n"
                                                               + m_srcDirPath + "\nto\n"
                                                               + m_dstDirPath + "/" + clickedFolder);
 
@@ -898,7 +912,7 @@ void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
                 QMessageBox::information(
                     this,
                     tr("Information"),
-                    tr("Note: no more images left in folder. \nChoose other folder to edit."));
+                    tr("Note: no more Media items left in folder. \nChoose other folder to edit."));
                 m_pathsScreenPtr->getNextButton()->setEnabled(false);
                 m_pathsScreenPtr->getSrcTextEdit()->clear();
                 m_pathsScreenPtr->getDstTextEdit()->clear();
@@ -925,7 +939,7 @@ void Widget::AvailableFolderLabelClicked(ClickOrTyped cot){
         else {
             QPixmap icon(":/icons/X_NoBackground.png");
             m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-            m_mainSortingWindowPtr->getVxTextLabel()->setText("Image move failed!");
+            m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item move failed!");
         }
     }
 
@@ -1061,7 +1075,7 @@ void Widget::CurrentlyInLabelClicked()
                 QMessageBox::information(
                     this,
                     tr("Information"),
-                    tr("Note: no more images left in folder. \nChoose other folder to edit."));
+                    tr("Note: no more media item left in folder. \nChoose other folder to edit."));
                 m_pathsScreenPtr->getNextButton()->setEnabled(false);
                 m_pathsScreenPtr->getSrcTextEdit()->clear();
                 m_pathsScreenPtr->getDstTextEdit()->clear();
@@ -1089,7 +1103,7 @@ void Widget::CurrentlyInLabelClicked()
         else {
             QPixmap icon(":/icons/X_NoBackground.png");
             m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-            m_mainSortingWindowPtr->getVxTextLabel()->setText("Image remove failed!");
+            m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item remove failed!");
         }
     }
 
@@ -1183,7 +1197,7 @@ void Widget::undoLastAction()
             if (file.remove()){
                 QPixmap icon(":/icons/V_NoBackground.png");
                 m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-                m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + m_undoStruct.imageName + " removed successfully from\n"
+                m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + m_undoStruct.imageName + " removed successfully from\n"
                                                               + m_undoStruct.dstFolder);
 
                 switchImage(imageSwitchEnum::Same);
@@ -1198,7 +1212,7 @@ void Widget::undoLastAction()
             if (file.copy(m_undoStruct.dstFolder + "/" + m_undoStruct.imageName)){
                 QPixmap icon(":/icons/V_NoBackground.png");
                 m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-                m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + m_undoStruct.imageName + " copied successfully from\n"
+                m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + m_undoStruct.imageName + " copied successfully from\n"
                                                                   + m_undoStruct.srcFolder + "\nto\n"
                                                                   + m_undoStruct.dstFolder);
 
@@ -1212,7 +1226,7 @@ void Widget::undoLastAction()
             if (file.rename(m_undoStruct.srcFolder + "/" + m_undoStruct.imageName)){
                 QPixmap icon(":/icons/V_NoBackground.png");
                 m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-                m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + m_undoStruct.imageName + " restored successfully");
+                m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + m_undoStruct.imageName + " restored successfully");
 
                 // m_imageCounter++; // current index is the index of previous image
                 m_imagesList.append(m_undoStruct.imageName);
@@ -1228,7 +1242,7 @@ void Widget::undoLastAction()
             if (file.rename(m_undoStruct.srcFolder + "/" + m_undoStruct.imageName)){
                 QPixmap icon(":/icons/V_NoBackground.png");
                 m_mainSortingWindowPtr->getVxIconLabel()->setPixmap(icon.scaled(30,30,Qt::KeepAspectRatio));
-                m_mainSortingWindowPtr->getVxTextLabel()->setText("Image " + m_undoStruct.imageName + " moved successfully from\n"
+                m_mainSortingWindowPtr->getVxTextLabel()->setText("Media item " + m_undoStruct.imageName + " moved successfully from\n"
                                                                   + m_undoStruct.dstFolder + "\nto\n"
                                                                   + m_undoStruct.srcFolder);
 

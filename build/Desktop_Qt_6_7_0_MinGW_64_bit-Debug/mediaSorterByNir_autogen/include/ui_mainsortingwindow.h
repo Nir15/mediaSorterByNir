@@ -476,8 +476,8 @@ public:
         FoldersAvailableLabel->setText(QCoreApplication::translate("MainSortingWindow", "Folders Available", nullptr));
         FilterTextEdit->setPlaceholderText(QCoreApplication::translate("MainSortingWindow", "Text filter of images names. For example: \"2016\" or \"jpg\"", nullptr));
         filterNumImagesLeftLabel->setText(QString());
-        copyCheckBox->setText(QCoreApplication::translate("MainSortingWindow", "Copy Image", nullptr));
-        moveCheckBox->setText(QCoreApplication::translate("MainSortingWindow", "Move Image", nullptr));
+        copyCheckBox->setText(QCoreApplication::translate("MainSortingWindow", "Copy Media Item", nullptr));
+        moveCheckBox->setText(QCoreApplication::translate("MainSortingWindow", "Move Media Item", nullptr));
         undoPushButton->setText(QCoreApplication::translate("MainSortingWindow", "Undo", nullptr));
         vxIconLabel->setText(QString());
         vxTextLabel->setText(QString());
