@@ -1308,7 +1308,6 @@ void Widget::setAllVideoInterface()
     connect(m_mainSortingWindowPtr->getVolumeHorizontalSlider(), &QSlider::valueChanged, this, &Widget::volumeHorizontalSliderValueChanged);
     connect(m_mainSortingWindowPtr->getDurationHorizontalSlider(), &QSlider::valueChanged, this, &Widget::durationHorizontalSliderValueChanged);
 
-
     // m_mainSortingWindowPtr->getDurationHorizontalSlider()->setRange(0, m_mediaPlayer->duration() / 1000);
 
     hideAllVideoInterface();
@@ -1421,8 +1420,16 @@ void Widget::volumeHorizontalSliderValueChanged(int value)
 // ---------------------durationHorizontalSliderValueChanged(int value)-------------------------------------------
 void Widget::durationHorizontalSliderValueChanged(int value)
 {
-    m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(value);
-    m_mediaPlayer->setPosition(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() * 1000); // position is in ms, multiply by 1000 to advance video in seconds
+    // m_mainSortingWindowPtr->getDurationHorizontalSlider()->setValue(value); // this is redundant. no need to use it.
+
+    // the media player emits this slot whenever it plays, due to getDurationHorizontalSlider()->setValue which emits QSlider::valueChanged. this setValue method is used in Widget::positionChanged method.
+    // the if condition is here to check what is the reason the current method is being called. it can be one of two reasons:
+    // 1. the media player caused it. in this case the "value" being sent to method is the same as m_mediaPlayer->position() / 1000, in this case no need to do anything.
+    // 2. the user caused it via pressing the slider. in this case the "value" being sent to method will be +1 higher than m_mediaPlayer->position() / 1000,
+    //    in this case the media player should be updated.
+    // Note - the m_mediaPlayer->position() is represented in ms, while "value" of slider is in seconds. hence the division by 1000.
+    if (m_mediaPlayer->position() / 1000 != value)
+        m_mediaPlayer->setPosition(m_mainSortingWindowPtr->getDurationHorizontalSlider()->value() * 1000); // position is in ms, multiply by 1000 to advance video in seconds
 }
 
 
