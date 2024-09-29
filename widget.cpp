@@ -125,6 +125,9 @@ Widget::Widget(QWidget *parent)
     m_mainSortingWindowPtr->getCurrentlyInLabel()->installEventFilter(currentlyInHover);
 
     setAllVideoInterface();
+
+    // make the image label background black, it makes the display more clear
+    m_mainSortingWindowPtr->getImageLabel()->setStyleSheet("QLabel { background-color : black;}");
 }
 
 // --------------------~Widget()--------------------------------------------------------------
@@ -238,7 +241,7 @@ void Widget::pathsBrowseSrcButtonClicked()
         m_srcDirPath = QFileDialog::getExistingDirectory(
             this,                                                           // Parent widget
             tr("Source Directory"),                                         // Dialog title
-            "C:\\",                                                         // Starting directory (optional)
+            m_srcDirPath.isEmpty() ? "C:\\" : m_srcDirPath,                 // Starting directory (optional). keep last choice
             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks    // Options to show directories only
         );
 
@@ -320,7 +323,7 @@ void Widget::pathsBrowseDstButtonClicked()
     m_dstDirPath = QFileDialog::getExistingDirectory(
         this,                                                           // Parent widget
         tr("Destination Directory"),                                    // Dialog title
-        "C:\\",                                                         // Starting directory (optional)
+        m_dstDirPath.isEmpty() ? "C:\\" : m_dstDirPath,                 // Starting directory (optional). keep last choice
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks    // Options to show directories only
         );
 
